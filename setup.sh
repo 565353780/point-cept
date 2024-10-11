@@ -20,3 +20,5 @@ cd libs/pointops
 TORCH_CUDA_ARCH_LIST="7.5 8.0 8.9" python setup.py install
 
 pip install -U open3d
+
+pip install -U flash-attn --no-build-isolation
