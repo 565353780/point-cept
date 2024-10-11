@@ -17,7 +17,6 @@ pip install -U ftfy regex tqdm
 pip install -U git+https://github.com/openai/CLIP.git
 
 cd libs/pointops
-python setup.py install
 TORCH_CUDA_ARCH_LIST="7.5 8.0 8.9" python setup.py install
 
 pip install -U open3d
