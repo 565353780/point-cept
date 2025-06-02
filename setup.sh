@@ -1,24 +1,23 @@
-pip install -U ninja
+pip install -U ninja sparsehash h5py pyyaml tensorboard tensorboardx wandb yapf addict \
+  einops scipy plyfile termcolor timm ftfy regex tqdm matplotlib black \
+  open3d
 
-pip install torch==2.4.0 torchvision==0.19.0 torchaudio==2.4.0 \
-  --index-url https://download.pytorch.org/whl/cu118
-
-pip install -U h5py pyyaml sharedarray tensorboard \
-  tensorboardx yapf addict einops scipy plyfile termcolor timm
+pip install torch==2.5.0 torchvision==0.20.0 torchaudio==2.5.0 \
+  --index-url https://download.pytorch.org/whl/cu124
 
 pip install torch-cluster torch-scatter torch-sparse \
-  -f https://data.pyg.org/whl/torch-2.4.0+cu118.html
+  -f https://data.pyg.org/whl/torch-2.5.0+cu124.html
 
 pip install -U torch-geometric
 
-pip install -U spconv-cu118
+pip install -U spconv-cu124
 
-pip install -U ftfy regex tqdm
+pip install -U git+https://github.com/octree-nn/ocnn-pytorch.git
 pip install -U git+https://github.com/openai/CLIP.git
+pip install -U git+https://github.com/Dao-AILab/flash-attention.git
 
 cd libs/pointops
-TORCH_CUDA_ARCH_LIST="7.5 8.0 8.9" python setup.py install
+pip install .
 
-pip install -U open3d
-
-pip install -U flash-attn --no-build-isolation
+cd ../pointgroup_ops
+pip install .
