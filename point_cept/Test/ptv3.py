@@ -6,7 +6,7 @@ from pointcept.models.point_transformer_v3.point_transformer_v3m2_sonata import 
 
 
 def test():
-    points = torch.rand((2, 400, 3), dtype=torch.float32, device="cuda")
+    points = torch.rand((4, 8192, 3), dtype=torch.float32, device="cuda")
 
     data = {
         "coord": points.reshape(-1, 3),
