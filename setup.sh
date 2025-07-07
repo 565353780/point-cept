@@ -1,8 +1,7 @@
 pip install -U cython
 
 pip install -U ninja sparsehash h5py pyyaml tensorboard tensorboardx wandb yapf addict \
-  einops scipy plyfile termcolor timm ftfy regex tqdm matplotlib black \
-  open3d
+  einops scipy plyfile termcolor timm ftfy regex tqdm matplotlib black open3d
 
 pip install torch==2.5.0 torchvision==0.20.0 torchaudio==2.5.0 \
   --index-url https://download.pytorch.org/whl/cu124
