@@ -16,7 +16,6 @@ pip install -U spconv-cu124
 
 #pip install -U git+https://github.com/octree-nn/ocnn-pytorch.git
 #pip install -U git+https://github.com/openai/CLIP.git
-#pip install -U git+https://github.com/Dao-AILab/flash-attention.git
 pip install flash-attn --no-build-isolation --use-pep517
 
 cd libs/pointops
