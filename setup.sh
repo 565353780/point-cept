@@ -1,6 +1,6 @@
 pip install -U cython
 
-pip install -U ninja sparsehash h5py pyyaml tensorboard tensorboardx wandb yapf addict \
+pip install -U ninja sparsehash h5py pyyaml sharedarray tensorboard tensorboardx wandb yapf addict \
   einops scipy plyfile termcolor timm ftfy regex tqdm matplotlib black open3d
 
 pip install torch==2.5.0 torchvision==0.20.0 torchaudio==2.5.0 \
@@ -13,8 +13,8 @@ pip install -U torch-geometric
 
 pip install -U spconv-cu124
 
-pip install -U git+https://github.com/octree-nn/ocnn-pytorch.git
-pip install -U git+https://github.com/openai/CLIP.git
+#pip install -U git+https://github.com/octree-nn/ocnn-pytorch.git
+#pip install -U git+https://github.com/openai/CLIP.git
 #pip install -U git+https://github.com/Dao-AILab/flash-attention.git
 pip install flash-attn --no-build-isolation --use-pep517
 
