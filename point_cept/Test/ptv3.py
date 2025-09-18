@@ -6,17 +6,24 @@ from pointcept.models.point_transformer_v3.point_transformer_v3m2_sonata import 
 
 
 def test():
-    points = torch.rand((4, 8192, 3), dtype=torch.float32, device="cuda")
+    points = [
+        torch.rand(600, 3).cuda(),
+        torch.rand(200, 3).cuda(),
+        torch.rand(300, 3).cuda(),
+        torch.rand(400, 3).cuda(),
+    ]
+
+    coords = torch.cat(points, dim=0)
+
+    batch_indices = [
+        torch.full((t.shape[0],), i, dtype=torch.long) for i, t in enumerate(points)
+    ]
+    batch = torch.cat(batch_indices, dim=0)
 
     data = {
-        "coord": points.reshape(-1, 3),
-        "feat": points.reshape(-1, 3),
-        "batch": torch.cat(
-            [
-                torch.ones(points.shape[1], dtype=torch.long, device="cuda") * i
-                for i in range(points.shape[0])
-            ]
-        ),
+        "coord": coords,
+        "feat": coords,
+        "batch": batch,
         "grid_size": 0.01,
     }
 
@@ -24,7 +31,8 @@ def test():
 
     point = ptv3(data)
 
-    feature = point.feat.reshape(points.shape[0], points.shape[1], -1)
+    feature = point.feat
 
+    print("coords shape: ", coords.shape)
     print("point feature shape: ", feature.shape)
     return True
