@@ -18,7 +18,7 @@ def test():
     batch_indices = [
         torch.full((t.shape[0],), i, dtype=torch.long) for i, t in enumerate(points)
     ]
-    batch = torch.cat(batch_indices, dim=0)
+    batch = torch.cat(batch_indices, dim=0).cuda()
 
     data = {
         "coord": coords,
