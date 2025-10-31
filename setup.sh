@@ -1,3 +1,5 @@
+sudo apt install libsparsehash-dev -y
+
 pip install -U cython
 
 pip install -U packaging ninja sparsehash h5py pyyaml sharedarray tensorboard \
