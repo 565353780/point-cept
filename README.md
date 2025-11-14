@@ -39,6 +39,9 @@ sudo apt install libnccl2=2.27.5-1+cuda12.4 libnccl-dev=2.27.5-1+cuda12.4
 ```bash
 conda create -n pc python=3.10
 conda activate pc
+# if you do not have sudo permission, run this 2 lines
+# conda install -c conda-forge sparsehash
+# export CPATH=$CONDA_PREFIX/include:$CPATH
 ./setup.sh
 ```
 
