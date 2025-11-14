@@ -27,7 +27,11 @@ def test():
         "grid_size": 0.01,
     }
 
-    ptv3 = PointTransformerV3(3).cuda()
+    ptv3 = PointTransformerV3(
+        3,
+        enable_flash=False,
+        enc_mode=True,
+    ).cuda()
 
     point = ptv3(data)
 
