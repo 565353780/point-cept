@@ -1,3 +1,6 @@
+cd ..
+git clone https://github.com/Dao-AILab/flash-attention
+
 sudo apt install libsparsehash-dev -y
 
 pip install -U cython
@@ -18,7 +21,11 @@ pip install -U spconv-cu124
 
 #pip install -U git+https://github.com/octree-nn/ocnn-pytorch.git
 #pip install -U git+https://github.com/openai/CLIP.git
-pip install flash-attn --no-build-isolation --use-pep517
+# pip install flash-attn --no-build-isolation --use-pep517
+cd flash-attention
+pip install . --no-build-isolation
+
+cd ../point-cept
 
 cd libs/pointops
 pip install .
