@@ -28,9 +28,9 @@ def test():
     }
 
     ptv3 = PointTransformerV3(
-        3,
+        in_channels=3,
         enable_flash=False,
-        enc_mode=True,
+        enc_mode=False,
     ).cuda()
 
     point = ptv3(data)

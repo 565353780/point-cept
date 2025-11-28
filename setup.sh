@@ -21,9 +21,13 @@ pip install -U spconv-cu124
 
 #pip install -U git+https://github.com/octree-nn/ocnn-pytorch.git
 #pip install -U git+https://github.com/openai/CLIP.git
-# pip install flash-attn --no-build-isolation --use-pep517
 cd flash-attention
-pip install . --no-build-isolation
+pip install packaging
+git checkout v2.8.3
+
+export MAKEFLAGS="-j$(nproc)"
+python setup.py build
+python setup.py install
 
 cd ../point-cept
 
