@@ -11,14 +11,14 @@ from flux_mv.Model.concerto.transform import Compose
 class Detector(object):
     def __init__(
         self,
-        ptv3_model_file_path: str,
+        model_file_path: str,
         device: str='cuda:0',
     ) -> None:
         self.device = device
 
-        assert os.path.exists(ptv3_model_file_path)
+        assert os.path.exists(model_file_path)
 
-        self.ptv3_encoder = load(ptv3_model_file_path)
+        self.ptv3_encoder = load(model_file_path)
         self.ptv3_encoder.to(device)
 
         self.ptv3_transform = Compose([
