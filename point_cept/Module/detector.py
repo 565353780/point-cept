@@ -2,7 +2,7 @@ import os
 import torch
 import numpy as np
 
-from typing import List
+from typing import List, Union
 
 from flux_mv.Model.concerto.model import load
 from flux_mv.Model.concerto.transform import Compose
@@ -42,14 +42,47 @@ class Detector(object):
 
     def encodePoints(
         self,
-        points: List[np.ndarray], # Nix3
+        points: Union[torch.Tensor, np.ndarray, List[torch.Tensor], List[np.ndarray]], # BxNx3 or Nix3
     ) -> torch.Tensor:
-        coords = np.concatenate(points, axis=0)
-
-        batch_indices = [
-            torch.full((t.shape[0],), i, dtype=torch.long) for i, t in enumerate(points)
-        ]
-        batch = torch.cat(batch_indices, dim=0).cuda()
+        # 判断输入类型，标准化为 List[np.ndarray] 格式
+        if isinstance(points, (torch.Tensor, np.ndarray)):  # e.g. torch.Tensor[B, N, 3] or np.ndarray[B, N, 3]
+            if points.ndim == 3:
+                # BxNx3
+                B = points.shape[0]
+                point_list = []
+                for b in range(B):
+                    p = points[b]
+                    if isinstance(p, torch.Tensor):
+                        point_list.append(p.cpu().numpy())
+                    else:
+                        point_list.append(p)
+                coords = np.concatenate(point_list, axis=0)
+                batch = torch.cat([
+                    torch.full((point_list[bi].shape[0],), bi, dtype=torch.long) for bi in range(B)
+                ], dim=0).to(self.device)
+            elif points.ndim == 2:
+                # 单个点云 Nx3
+                if isinstance(points, torch.Tensor):
+                    coords = points.cpu().numpy()
+                else:
+                    coords = points
+                batch = torch.zeros((coords.shape[0],), dtype=torch.long).to(self.device)
+            else:
+                raise ValueError(f'Input tensor/array of shape {points.shape} is not supported.')
+        elif isinstance(points, list):
+            # List of torch.Tensor or np.ndarray, each shape Ni x 3
+            point_list = []
+            for p in points:
+                if isinstance(p, torch.Tensor):
+                    point_list.append(p.cpu().numpy())
+                else:
+                    point_list.append(p)
+            coords = np.concatenate(point_list, axis=0)
+            batch = torch.cat([
+                torch.full((point_list[i].shape[0],), i, dtype=torch.long) for i in range(len(point_list))
+            ], dim=0).to(self.device)
+        else:
+            raise TypeError("points must be torch.Tensor, np.ndarray, or List of them")
 
         point = {
             "coord": coords,
