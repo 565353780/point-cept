@@ -4,8 +4,8 @@ import numpy as np
 
 from typing import List, Union
 
-from flux_mv.Model.concerto.model import load
-from flux_mv.Model.concerto.transform import Compose
+from point_cept.Model.concerto.model import load
+from point_cept.Model.concerto.transform import Compose
 
 
 class Detector(object):
