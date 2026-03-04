@@ -1,6 +1,7 @@
 import os
 import numpy as np
 
+from point_cept.Model.perceiver_resampler import PerceiverResampler
 from point_cept.Module.detector import Detector
 
 
@@ -23,4 +24,15 @@ def demo():
     feats = detector.encodePoints(points)
     for i in range(len(feats)):
         print(f'feat {i}:', feats[i].shape)
+
+    # trainable
+    perceiver_resampler = PerceiverResampler(
+        dim_in=768,
+        num_latents=64,
+        dim_out=1024,
+    )
+
+    pt_tokens = perceiver_resampler(feats)
+
+    print('token:', pt_tokens.shape)
     return True
