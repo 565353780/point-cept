@@ -4,8 +4,8 @@ import numpy as np
 
 from typing import List, Union
 
-from point_cept.Model.concerto.model import load
-from point_cept.Model.concerto.transform import Compose
+from point_cept.Model.utonia.model import load
+from point_cept.Model.utonia.transform import Compose
 
 
 class Detector(object):
@@ -23,14 +23,18 @@ class Detector(object):
 
         self.ptv3_transform = Compose([
             dict(type="Update", keys_dict={"index_valid_keys": ["coord", "color", "normal", "batch"]}),
+            # dict(type="NormalizeCoord"), # uncomment when applying to objects
+            #dict(type="RandomScale", scale=[scale, scale]),
+            #dict(type="CenterShift", apply_z=True),
             dict(
                 type="GridSample",
-                grid_size=0.02,
+                grid_size=0.01,
                 hash_type="fnv",
                 mode="train",
                 return_grid_coord=True,
                 return_inverse=True,
             ),
+            #dict(type="NormalizeColor"),
             dict(type="ToTensor"),
             dict(
                 type="Collect",
@@ -99,12 +103,13 @@ class Detector(object):
 
         point = self.ptv3_encoder(point)
 
-        feature = point.feat
-        batch_ids = point.batch
-
-        features_list = []
+        feature_list = []
+        coord_list = []
+        grid_coord_list = []
         for i in range(len(points)):
-            mask = batch_ids == i
-            features_list.append(feature[mask])
+            mask = point.batch == i
+            feature_list.append(point.feat[mask])
+            coord_list.append(point.coord[mask])
+            grid_coord_list.append(point.grid_coord[mask])
 
-        return features_list
+        return feature_list, coord_list, grid_coord_list
