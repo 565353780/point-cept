@@ -2,8 +2,9 @@ import os
 import torch
 import numpy as np
 
-from typing import List, Union
+from typing import List, Union, Dict, Tuple
 
+from point_cept.Model.utonia.structure import Point
 from point_cept.Model.utonia.model import load
 from point_cept.Model.utonia.transform import Compose
 
@@ -13,7 +14,6 @@ class Detector(object):
         self,
         model_file_path: str,
         device: str='cuda:0',
-        voxel_resolution: int=16,
     ) -> None:
         self.device = device
 
@@ -21,21 +21,22 @@ class Detector(object):
 
         self.ptv3_encoder = load(model_file_path)
         self.ptv3_encoder.to(device)
+        self.ptv3_encoder.eval()
 
         self.ptv3_transform = Compose([
             dict(type="Update", keys_dict={"index_valid_keys": ["coord", "color", "normal", "batch"]}),
-            # dict(type="NormalizeCoord"), # uncomment when applying to objects
+            dict(type="NormalizeCoord"),
             #dict(type="RandomScale", scale=[scale, scale]),
-            #dict(type="CenterShift", apply_z=True),
+            dict(type="CenterShift", apply_z=True),
             dict(
                 type="GridSample",
-                grid_size=1.0 / 16 / voxel_resolution,
+                grid_size=0.01,
                 hash_type="fnv",
                 mode="train",
                 return_grid_coord=True,
                 return_inverse=True,
             ),
-            #dict(type="NormalizeColor"),
+            dict(type="NormalizeColor"),
             dict(type="ToTensor"),
             dict(
                 type="Collect",
@@ -45,10 +46,20 @@ class Detector(object):
         ])
         return
 
+    def detect(self, point: Dict) -> Point:
+        point = self.ptv3_transform(point)
+
+        for key in point.keys():
+            if isinstance(point[key], torch.Tensor):
+                point[key] = point[key].to(self.device, non_blocking=True)
+
+        point = self.ptv3_encoder(point)
+        return point
+
     def encodePoints(
         self,
         points: Union[torch.Tensor, np.ndarray, List[torch.Tensor], List[np.ndarray]], # BxNx3 or Nix3
-    ) -> torch.Tensor:
+    ) -> Tuple[List[torch.Tensor], List[torch.Tensor]]:
         # 判断输入类型，标准化为 List[np.ndarray] 格式
         if isinstance(points, (torch.Tensor, np.ndarray)):  # e.g. torch.Tensor[B, N, 3] or np.ndarray[B, N, 3]
             if points.ndim == 3:
@@ -96,21 +107,13 @@ class Detector(object):
             "batch": batch,
         }
 
-        point = self.ptv3_transform(point)
-
-        for key in point.keys():
-            if isinstance(point[key], torch.Tensor):
-                point[key] = point[key].to(self.device, non_blocking=True)
-
-        point = self.ptv3_encoder(point)
+        point = self.detect(point)
 
         feature_list = []
-        coord_list = []
         grid_coord_list = []
         for i in range(len(points)):
             mask = point.batch == i
             feature_list.append(point.feat[mask])
-            coord_list.append(point.coord[mask])
             grid_coord_list.append(point.grid_coord[mask])
 
-        return feature_list, coord_list, grid_coord_list
+        return point, feature_list, grid_coord_list
