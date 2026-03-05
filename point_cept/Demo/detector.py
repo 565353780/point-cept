@@ -20,6 +20,7 @@ def demo():
     detector = Detector(
         model_file_path=model_file_path,
         device=device,
+        voxel_resolution=16,
     )
 
     points = [

@@ -13,6 +13,7 @@ class Detector(object):
         self,
         model_file_path: str,
         device: str='cuda:0',
+        voxel_resolution: int=16,
     ) -> None:
         self.device = device
 
@@ -28,7 +29,7 @@ class Detector(object):
             #dict(type="CenterShift", apply_z=True),
             dict(
                 type="GridSample",
-                grid_size=0.01,
+                grid_size=1.0 / 16 / voxel_resolution,
                 hash_type="fnv",
                 mode="train",
                 return_grid_coord=True,
