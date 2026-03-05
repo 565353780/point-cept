@@ -2,7 +2,7 @@ import os
 import torch
 import numpy as np
 
-from typing import List, Union, Dict, Tuple
+from typing import List, Union, Dict
 
 from point_cept.Model.utonia.structure import Point
 from point_cept.Model.utonia.model import load
@@ -59,7 +59,7 @@ class Detector(object):
     def encodePoints(
         self,
         points: Union[torch.Tensor, np.ndarray, List[torch.Tensor], List[np.ndarray]], # BxNx3 or Nix3
-    ) -> Tuple[List[torch.Tensor], List[torch.Tensor]]:
+    ) -> Point:
         # 判断输入类型，标准化为 List[np.ndarray] 格式
         if isinstance(points, (torch.Tensor, np.ndarray)):  # e.g. torch.Tensor[B, N, 3] or np.ndarray[B, N, 3]
             if points.ndim == 3:
@@ -109,11 +109,4 @@ class Detector(object):
 
         point = self.detect(point)
 
-        feature_list = []
-        grid_coord_list = []
-        for i in range(len(points)):
-            mask = point.batch == i
-            feature_list.append(point.feat[mask])
-            grid_coord_list.append(point.grid_coord[mask])
-
-        return point, feature_list, grid_coord_list
+        return point

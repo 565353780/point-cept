@@ -36,16 +36,23 @@ def demo():
 
     points = [mesh.vertices]
 
-    feats, coords, grid_coords = detector.encodePoints(points)
-    for i in range(len(feats)):
-        print(f'feat {i}:', feats[i].shape)
-        print(f'coord {i}:', coords[i].shape, coords[i].min(), coords[i].max())
-        print(f'grid_coord {i}:', grid_coords[i].shape, grid_coords[i].min(), grid_coords[i].max())
+    point = detector.encodePoints(points)
 
-        coord_pcd = toPcd(coords[i])
-        grid_coord_pcd = toPcd(grid_coords[i])
+    print('batch:', point.batch.shape)
 
-        o3d.io.write_point_cloud(data_folder_path + f'coord_{i:06d}.ply', coord_pcd, write_ascii=True)
+    feature_list = []
+    grid_coord_list = []
+    for i in range(len(points)):
+        mask = point.batch == i
+        feature_list.append(point.feat[mask])
+        grid_coord_list.append(point.grid_coord[mask])
+
+    for i in range(len(feature_list)):
+        print(f'feat {i}:', feature_list[i].shape)
+        print(f'grid_coord {i}:', grid_coord_list[i].shape, grid_coord_list[i].min(), grid_coord_list[i].max())
+
+        grid_coord_pcd = toPcd(grid_coord_list[i])
+
         o3d.io.write_point_cloud(data_folder_path + f'grid_coord_{i:06d}.ply', grid_coord_pcd, write_ascii=True)
 
     # trainable
@@ -55,7 +62,7 @@ def demo():
         dim_out=1024,
     ).to(device)
 
-    pt_tokens = perceiver_resampler(feats)
+    pt_tokens = perceiver_resampler(feature_list)
 
     print('token:', pt_tokens.shape)
     return True
