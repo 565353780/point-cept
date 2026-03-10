@@ -5,7 +5,7 @@ conda install -c conda-forge sparsehash -y
 
 pip install -U cython
 
-pip install torch==2.5.0 torchvision==0.20.0 torchaudio==2.5.0 \
+pip install torch torchvision torchaudio \
   --index-url https://download.pytorch.org/whl/cu124
 
 pip install -U packaging ninja h5py pyyaml sharedarray tensorboard \
@@ -13,7 +13,7 @@ pip install -U packaging ninja h5py pyyaml sharedarray tensorboard \
   timm ftfy regex tqdm matplotlib black open3d
 
 pip install torch-cluster torch-scatter torch-sparse \
-  -f https://data.pyg.org/whl/torch-2.5.0+cu124.html
+  -f https://data.pyg.org/whl/torch-2.6.0+cu124.html
 
 pip install -U torch-geometric
 
