@@ -27,7 +27,7 @@ cd flash-attention
 python setup.py install
 
 cd ../point-cept/libs/pointops
-pip install .
+pip install . --no-build-isolation
 
 cd ../pointgroup_ops
-pip install .
+pip install . --no-build-isolation
